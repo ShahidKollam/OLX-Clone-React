@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
-import './Header.css';
-import OlxLogo from '../../assets/OlxLogo';
-import Search from '../../assets/Search';
-import Arrow from '../../assets/Arrow';
-import SellButton from '../../assets/SellButton';
-import SellButtonPlus from '../../assets/SellButtonPlus';
+import "./Header.css";
+import OlxLogo from "../../assets/OlxLogo";
+import Search from "../../assets/Search";
+import Arrow from "../../assets/Arrow";
+import SellButton from "../../assets/SellButton";
+import SellButtonPlus from "../../assets/SellButtonPlus";
+import { getAuth, signOut } from "firebase/auth";
+import { AuthContext, FirebaseContext } from "../../store/Context";
+const auth = getAuth();
+
 function Header() {
+  const { user } = useContext(AuthContext);
+  const { firebase } = useContext(FirebaseContext);
+
+  const navigate = useNavigate();
+
   return (
     <div className="headerParentDiv">
       <div className="headerChildDiv">
@@ -34,15 +44,25 @@ function Header() {
           <Arrow></Arrow>
         </div>
         <div className="loginPage">
-          <span>Login</span>
+        <span>{user ? user.displayName : <a href="/login">Login</a>}</span>
           <hr />
         </div>
+        {user && (
+          <span
+            onClick={() => {
+              signOut(auth);
+              navigate("/login");
+            }}
+          >
+            Logout
+          </span>
+        )}
 
         <div className="sellMenu">
           <SellButton></SellButton>
           <div className="sellMenuContent">
             <SellButtonPlus></SellButtonPlus>
-            <span>SELL</span>
+            <span><a href="/create">SELL</a></span>
           </div>
         </div>
       </div>
