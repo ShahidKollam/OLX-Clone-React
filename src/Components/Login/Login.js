@@ -10,17 +10,21 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState("");
   const { firebase } = useContext(FirebaseContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const auth = getAuth(firebase);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    if(!email || !password){
+      setErrorMessage("All fields are required.");
+      return;
+    }
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      navigate('/')
+      navigate("/");
       console.log("login success");
     } catch (error) {
       alert(error.message);
@@ -58,7 +62,7 @@ function Login() {
           />
           <br />
           <br />
-          <div style={{ height: errorMessage ? '0' : '40px' }}></div>
+          <div style={{ height: errorMessage ? "0" : "40px" }}></div>
           {errorMessage && <p className="error">{errorMessage}</p>}
           <button>Login</button>
         </form>
